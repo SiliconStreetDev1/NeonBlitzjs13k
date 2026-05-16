@@ -11,6 +11,7 @@ export class GameLoop {
     /** @type {import('./engine.js').GameEngine} */
     this.engine = engine;
     this.loop = this.loop.bind(this);
+    this._lastBlackoutState = false;
   }
 
   /**
@@ -43,7 +44,7 @@ export class GameLoop {
     
     this.engine.hud.updateDangerState(percent, this.engine.level);
     
-    if (this.engine.level >= 2) {
+    if (this.engine.hazardChameleon) {
       const cycle = Math.floor(timestamp / 300);
       if (!this.engine.isDragging && this.engine.chameleonCycle !== cycle) {
         this.engine.chameleonCycle = cycle;
@@ -52,13 +53,20 @@ export class GameLoop {
         this.engine.chameleonCycle = -1;
         this.engine.grid.updateChameleonBlocks(false);
       }
+    } else if (this.engine.chameleonCycle !== -1) {
+      this.engine.chameleonCycle = -1;
+      this.engine.grid.updateChameleonBlocks(false);
     }
 
-    // Level 3 Hazard: Memory Leak (Grid goes dark while tracing)
-    this.engine.ui.gridContainer.classList.toggle('blackout', this.engine.level >= 3 && this.engine.isDragging);
+    // Memory Leak (Grid goes dark while tracing)
+    const shouldBlackout = this.engine.hazardMemoryLeak && this.engine.isDragging;
+    if (this._lastBlackoutState !== shouldBlackout) {
+      this._lastBlackoutState = shouldBlackout;
+      this.engine.ui.gridContainer.classList.toggle('blackout', shouldBlackout);
+    }
 
-    // Level 4 Hazard: Short Circuit (Trace overloads if held for > 2.5s)
-    if (this.engine.level >= 4 && this.engine.isDragging) {
+    // Short Circuit (Trace overloads if held for > 2.5s)
+    if (this.engine.hazardOverload && this.engine.isDragging) {
       this.engine.dragTime = (this.engine.dragTime || 0) + dt;
       if (this.engine.dragTime > 2500) {
         this.engine.inputHandler.resetSelection();
@@ -66,7 +74,11 @@ export class GameLoop {
       }
     } else this.engine.dragTime = 0;
 
-    this.engine.renderer.draw(timestamp, dt); // Passing dt to normalize canvas physics
+    this.engine.hazards?.update?.(dt, timestamp);
+
+    this.engine.renderer.clear();
+    this.engine.hazards?.draw?.(timestamp);
+    this.engine.renderer.draw(timestamp, dt);
     
     if (!this.engine.isPlaying && this.engine.timeRemaining <= 0) return;
     

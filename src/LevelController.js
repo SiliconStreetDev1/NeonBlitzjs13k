@@ -55,6 +55,18 @@ export class LevelController {
     this.engine.audio?.startLevelMusic?.(this.engine.level);
 
     const rng = seededRandom(this.engine.level);
+    
+    // Evaluate progressive hazard states
+    this.engine.hazardChameleon = this.engine.level === 3 || (this.engine.level >= 7 && rng() < 0.5);
+    this.engine.hazardMemoryLeak = this.engine.level === 4 || (this.engine.level >= 7 && !this.engine.hazardChameleon && rng() < 0.5);
+    this.engine.hazardOverload = this.engine.level === 5 || (this.engine.level >= 7 && rng() < 0.5);
+
+    this.engine.hazards?.init?.(rng);
+
+    // Enforce exclusivity: Fog overrides Memory Leak to prevent an unplayable pitch-black board
+    const fog = this.engine.hazards?.getPlugin('fog');
+    if (fog && fog.isActive) this.engine.hazardMemoryLeak = false;
+
     this.engine.targetQueue = generateLevelData(this.engine.level, rng, this.engine.config);
     this.engine.currentTargetIndex = 0;
     this.engine.targetDifficulty = this.engine.targetQueue.length > 0 ? this.engine.targetQueue[0].difficulty : 0;

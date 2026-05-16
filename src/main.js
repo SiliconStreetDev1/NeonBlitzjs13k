@@ -26,3 +26,18 @@ const game = new GameEngine(ui, config);
 
 const app = new AppController(game, ui);
 app.init();
+
+// --- DEBUG: CHEAT CODES ---
+window.addEventListener('keydown', (e) => {
+  if (e.shiftKey && e.key.toLowerCase() === 't') {
+    game.audio?.nextTrack?.();
+  } else if (e.shiftKey && e.key.toLowerCase() === 'n') {
+    game.level++;
+    game.combo = 1;
+    game.levelTimeSpent = 0;
+    game.timeRemaining = 60000;
+    game.maxTime = 60000;
+    game.hud.updateLevelDisplay(game.level);
+    game.levelController.initLevel();
+  }
+});

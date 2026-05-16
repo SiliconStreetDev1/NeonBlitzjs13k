@@ -2,7 +2,10 @@
 import { 
   RLOCore,
   createInstrumentMap,
-  PianoSynth
+  FMSynth,
+  LeadSynth,
+  DrumSynth,
+  ElectricGuitarSynth
 } from 'rlo-engine';
 import { config } from '../config.js';
 
@@ -28,6 +31,8 @@ export class AudioManager {
     this._pend = false;
     this._pendLevel = 1;
     this._currentTrack = null;
+    this._playQueue = [];
+    this._lastLevel = null;
   }
 
   /** @returns {void} */
@@ -44,7 +49,13 @@ export class AudioManager {
       this.ctx.resume();
     }
     
-    const customMap = createInstrumentMap([{ synth: new PianoSynth(), start: 0, end: 128 }]);
+    const customMap = createInstrumentMap([
+      { synth: new FMSynth(), start: 0, end: 26 },     // Yamaha DX7 style electric piano for the main melody
+      { synth: new ElectricGuitarSynth(), start: 27, end: 31 }, // Metal Guitar!
+      { synth: new FMSynth(), start: 32, end: 82 },    // Yamaha DX7 style electric piano for the main melody
+      { synth: new LeadSynth(), start: 83, end: 127 }, // Gritty sawtooth leads for techno vibes
+      { synth: new DrumSynth(), start: 128, end: 128 } // Proper percussion for techno kicks and explosions
+    ]);
 
     this.rloEngine = new RLOCore(this.ctx, customMap);
 
@@ -106,6 +117,24 @@ export class AudioManager {
     this.playSFX('sawtooth', "C2", 1.2, 1.0, 0.3); 
   }
   
+  _getNextRandomTrack() {
+    // If the queue is empty, refill it with all tracks and shuffle
+    if (this._playQueue.length === 0) {
+      this._playQueue = config.tracks.map((_, i) => i);
+      for (let i = this._playQueue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this._playQueue[i], this._playQueue[j]] = [this._playQueue[j], this._playQueue[i]];
+      }
+      // Prevent repeating the same track from the end of the last queue to the start of the next queue
+      if (this._playQueue.length > 1 && config.tracks[this._playQueue[0]] === this._currentTrack) {
+        const temp = this._playQueue[0];
+        this._playQueue[0] = this._playQueue[1];
+        this._playQueue[1] = temp;
+      }
+    }
+    return config.tracks[this._playQueue.shift()];
+  }
+
   startLevelMusic(level = 1) { 
     if (!this.rloEngine) {
       this._pend = true;
@@ -113,10 +142,11 @@ export class AudioManager {
       return;
     }
     
-    // Cycle through tracks sequentially based on the current level
-    const targetTrack = config.tracks[(level - 1) % config.tracks.length];
+    // Only switch the track if it's a new level progression, or if we aren't playing anything
+    if (!this.isPlaying || this._lastLevel !== level) {
+      this._lastLevel = level;
+      const targetTrack = this._getNextRandomTrack();
 
-    if (!this.isPlaying || this._currentTrack !== targetTrack) {
       this.isPlaying = true;
       this._currentTrack = targetTrack;
       this.rloEngine.setVolume(0.16);
@@ -125,5 +155,16 @@ export class AudioManager {
   }
 
   stopMusic() { this.isPlaying = false; this.rloEngine?.stop?.(); }
+
+  nextTrack() {
+    if (!this.rloEngine || !config.tracks.length) return;
+    
+    const targetTrack = this._getNextRandomTrack();
+    
+    this.isPlaying = true;
+    this._currentTrack = targetTrack;
+    this.rloEngine.setVolume(0.16);
+    this.rloEngine.playSequence(targetTrack, { loop: true, fadeInTime: 0.5 });
+  }
 
 }

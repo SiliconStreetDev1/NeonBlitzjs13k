@@ -30,9 +30,11 @@ export class HazardFog {
    */
   init(rng, manager) {
     this.isActive = false;
-    const unlockLvl = this.engine.progression.hazards.fog.unlockLevel;
-    if (this.engine.level >= unlockLvl) {
-      this.isActive = rng() < Math.min(0.6, 0.20 + (this.engine.level - unlockLvl) * 0.05);
+    const unlockLvl = 7;
+    if (this.engine.level === unlockLvl) {
+      this.isActive = true; // Guarantee the fog on its debut level
+    } else if (this.engine.level > unlockLvl) {
+      this.isActive = rng() < 0.33; 
     }
   }
 
@@ -69,7 +71,7 @@ export class HazardFog {
     }
     
     // Shrink the spotlight from generous down to tight over 30 levels
-    const shrinkFactor = Math.min(1, Math.max(0, (this.engine.level - this.engine.progression.hazards.fog.unlockLevel) / 30));
+    const shrinkFactor = Math.min(1, Math.max(0, (this.engine.level - 7) / 30));
     const innerRadius = 100 - (50 * shrinkFactor);
     const outerRadius = 360 - (180 * shrinkFactor);
     

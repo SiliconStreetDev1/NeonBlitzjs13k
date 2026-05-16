@@ -7,6 +7,9 @@ import { LevelController } from './LevelController.js';
 import { GameRenderer } from './GameRenderer.js';
 import { GameLoop } from './GameLoop.js';
 import { AudioManager } from './Audio/AudioManager.js';
+import { HazardManager } from './Hazards/HazardManager.js';
+import { HazardFog } from './Hazards/HazardFog.js';
+import { HazardEMP } from './Hazards/HazardEMP.js';
 
 /**
  * @typedef {import('./types.js').UIComponents} UIComponents
@@ -33,6 +36,11 @@ export class GameEngine {
     this.audio = new AudioManager();
     /** @type {InputHandler} */
     this.inputHandler = new InputHandler(this);
+
+    /** @type {HazardManager} */
+    this.hazards = new HazardManager(this);
+    this.hazards.registerPlugin('fog', HazardFog);
+    this.hazards.registerPlugin('emp', HazardEMP);
     
     /** @type {GridManager} */
     this.grid = new GridManager(this.ui, this.config);
@@ -88,6 +96,11 @@ export class GameEngine {
     this.chameleonCycle = 0;
     /** @type {number | null} */ this.animId = null;
     this.targetDifficulty = 0; 
+
+    // Active Hazards
+    this.hazardChameleon = false;
+    this.hazardMemoryLeak = false;
+    this.hazardOverload = false;
   }
 
   /** Resizes the internal canvas to strictly match the DOM container. */

@@ -1,32 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=en>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0b0c10">
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <meta charset=UTF-8>
+  <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+  <link rel=icon href="data:,">
   <title>Neon Blitz</title>
 </head>
 <body>
-  
-  <div id="startOverlay" style="position:fixed;inset:0;background:#0b0c10f2;color:#66fcf1;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-size:2rem;font-weight:700;cursor:pointer;font-family:monospace;letter-spacing:2px;">
-    [ TAP TO START ]
-  </div>
-
-  <div class="hud">
-    <div class="stats-row">
-      <div class="stats">LVL: <span id="levelDisplay">1</span> | TIME: <span id="timeSpentDisplay">0.0s</span></div>
-    </div>
-    <div id="targetColorName" style="font-size:1.4rem;margin:4px 0"></div>
-    <div class="timer-container"><div id="timerBar" class="timer-bar"></div></div>
-  </div>
-  
-  <div class="game-area">
-    <div id="gridContainer" class="grid"></div>
-    <canvas id="lineCanvas"></canvas>
-  </div>
-  <script type="module" src="/src/main.js"></script>
+<div id=startOverlay style="position:fixed;inset:0;background:#0b0c10f2;color:#66fcf1;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;font-size:2rem;font-weight:700;cursor:pointer;font-family:monospace;letter-spacing:2px">[ TAP TO START ]</div>
+<div style="position:absolute;top:15px;left:15px;color:#fc0;font-size:1.4rem;font-weight:900;text-shadow:0 0 10px #fc0;z-index:100;font-style:italic;">STAGE <span id=levelDisplay>1</span></div>
+<div class=hud><div class=stats-row><div class=stats>TIME: <span id=timeSpentDisplay>0.0s</span></div></div><div id=targetColorName style="font-size:1.4rem;margin:4px 0"></div><div class=timer-container><div id=timerBar class=timer-bar></div></div></div>
+<div class=game-area><div id=gridContainer class=grid></div><canvas id=lineCanvas></canvas></div>
+<script type=module src=/src/main.js></script>
 </body>
 </html>

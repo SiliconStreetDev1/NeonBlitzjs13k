@@ -25,8 +25,6 @@ export class GameRenderer {
    * @param {number} dt
    */
   draw(timestamp, dt) {
-    this.engine.ui.ctx.clearRect(0, 0, this.engine.ui.canvas.width, this.engine.ui.canvas.height);
-
     if (this.engine.selectedBlocks.length > 0 && this.engine.currentDragColorHex) {
       this.engine.ui.ctx.beginPath();
       
