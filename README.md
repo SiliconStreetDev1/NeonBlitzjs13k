@@ -2,8 +2,6 @@
 
 **Neon Blitz** is a hacking puzzle game built entirely with Vanilla JavaScript and HTML5 Canvas. **This project is a micro-game example created to showcase the RLO Audio Engine (specifically `RLOCore`) operating under extreme size constraints like the js13kGames 13KB limit.** Trace paths, memorize the grid, and survive hazardous anomalies while listening to a fully generative piano soundtrack synthesized dynamically at runtime!
 
-🎮 **[PLAY NEON BLITZ DIRECTLY IN YOUR BROWSER HERE!](https://siliconstreetdev1.github.io/NeonBlitz/)** 🎮
-
 ## 🌟 Features
 
 - **Fast-Paced Puzzle Action:** Swipe across the grid to connect targets, manage your time, and push for high scores through a progressive difficulty curve.
@@ -34,25 +32,12 @@
    npm install
    ```
 
-3. Start the development server:
+3. Run it
    ```bash
-   npm run dev
+      npm run preview
    ```
    The game will be available at `http://localhost:5173`.
 
-### Building for Production
-
-To create an optimized, minified production build (which also outputs the `neon-blitz.zip` file to check against the 13KB limit):
-
-```bash
-npm run build
-```
-
-You can preview the built files locally with:
-
-```bash
-npm run preview
-```
 
 ## 🛠️ Tech Stack
 
