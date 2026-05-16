@@ -8,7 +8,6 @@
 - **Ultra-Lightweight Procedural Audio:** Powered by `RLOCore`. It converts sequence files into highly-compressed 1D numerical arrays and synthesizes music at runtime using pure mathematics, entirely bypassing large MP3 or OGG audio files.
 - **js13kGames Ready:** The entire game—including logic, graphics, and dynamic soundtrack—compiles to a ZIP file smaller than 13 kilobytes.
 - **Dynamic Hazards:** Face ever-evolving board mechanics including Chameleon blocks, Memory Leaks, and Trace Overloads.
-- **Mobile First:** Designed with a smooth, forgiving touch-interaction model, preventing iOS zooming, and supporting orientation locks.
 
 ## 🚀 Getting Started
 
