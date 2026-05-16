@@ -37,11 +37,12 @@ export function getCenter(el) {
 
 export function getBlockFromPoint(x, y) {
   let closest = null, minDist = 30;
-  document.querySelectorAll('.block:not(.empty)').forEach(el => {
-    let rect = el.getBoundingClientRect();
-    let dist = Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2));
+  for (const el of document.querySelectorAll('.block:not(.empty)')) {
+    let r = el.getBoundingClientRect();
+    if (x >= r.x && x <= r.right && y >= r.y && y <= r.bottom) return el;
+    let dist = Math.hypot(x - (r.x + r.width / 2), y - (r.y + r.height / 2));
     if (dist < minDist) { minDist = dist; closest = el; }
-  });
+  }
   return closest;
 }
 
