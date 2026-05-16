@@ -31,7 +31,15 @@
    npm install
    ```
 
-3. Run it
+3. Build:
+
+   ```bash
+   npm run build
+   ```
+**About the ZIP file:**
+The build process automatically runs a custom script (`build-zip.js`) that bundles the game into a single `neon-blitz.zip` file. During this step, it in-place minifies all `.json` files (like the procedural music sequences) to squeeze out every possible byte, and strictly validates that the final archive is at or under the exact 13,312-byte (13KB) limit for the js13kGames competition.
+
+4. Run it
    ```bash
       npm run preview
    ```
